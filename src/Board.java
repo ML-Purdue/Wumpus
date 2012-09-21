@@ -1,7 +1,7 @@
 import java.util.Random;
 
 public class Board {
-    int width;
+    public int width;
     Tile[][] tiles;
 
     public Board(int w, int num_pits){
