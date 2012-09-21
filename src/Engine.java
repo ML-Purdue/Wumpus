@@ -1,6 +1,5 @@
 
 public class Engine {
-
 	private Agent agent;
 	private int turn;
     private Board board;
@@ -63,8 +62,12 @@ public class Engine {
         }
     }
 
+    /* returns true if the wumpus died, false otherwise */
     public boolean shoot() {
         turn++;
+        if (!agent.hasArrow) {
+            return false;
+        }
         agent.hasArrow = false;
         x = agent.location.x;
         y = agent.location.y;
@@ -78,24 +81,38 @@ public class Engine {
                 }
                 break;
             case Direction.south:
+                for (; y >= 0; y--) {
+                    if (board.tiles[x][y].hasWumpus) {
+                        board.tiles[x][y].hasWumpus = false;
+                        return true;
+                    }
+                }
                 break;
             case Direction.east:
+                for (; x < board.width; x++) {
+                    if (board.tiles[x][y].hasWumpus) {
+                        board.tiles[x][y].hasWumpus = false;
+                        return true;
+                    }
+                }
                 break;
             case Direction.west:
+                for (; x >= 0; x--) {
+                    if (board.tiles[x][y].hasWumpus) {
+                        board.tiles[x][y].hasWumpus = false;
+                        return true;
+                    }
+                }
                 break;
         }
 
         return false;
     }
 
-
-    public Tile getCurrentTile() {
-        return agent.location;
-    }
+    /* TODO: add sensory methods */
 
     public Direction getHeading() {
         return agent.heading;
     }
-
 
 }
