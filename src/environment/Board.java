@@ -42,7 +42,7 @@ public class Board {
             int p_x = rand.nextInt(width);
             int p_y = rand.nextInt(width);
             //Make sure pits aren't spawned on anything else
-            if(p_x != 0 || p_y != 0 && !tiles[p_y][p_x].hasWumpus && !tiles[p_y][p_x].hasGold && !tiles[p_y][p_x].hasPit)
+            if(!(p_x == 0 && p_y == 0) && !tiles[p_y][p_x].hasWumpus && !tiles[p_y][p_x].hasGold && !tiles[p_y][p_x].hasPit)
                 tiles[p_y][p_x].hasPit = true;
             else
                 i--;
