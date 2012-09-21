@@ -7,5 +7,12 @@ public class Agent {
     public boolean alive;
     public boolean hasGold;
     public boolean hasArrow;
+
+    public Agent(){
+        heading = Direction.north;
+        alive = true;
+        hasGold = false;
+        hasArrow = true;
+    }
 }
 
