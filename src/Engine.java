@@ -3,7 +3,7 @@ public class Engine {
 
 	private Agent agent;
 	private int turn;
-    private Board game;
+    private Board board;
 
     public void turn(Direction heading) {
         turn++;
@@ -39,7 +39,7 @@ public class Engine {
             return false;
         }
 
-        agent.location = game.tiles[toX][toY];
+        agent.location = board.tiles[toX][toY];
         if (agent.location.hasWumpus || agent.location.hasPit) {
             agent.alive = false;
             endGame();
@@ -66,13 +66,16 @@ public class Engine {
     public boolean shoot() {
         turn++;
         agent.hasArrow = false;
+        x = agent.location.x;
+        y = agent.location.y;
         switch (agent.heading) {
             case Direction.north:
-                for (y = agent.location.y; y < game.width; y++) {
+                for (; y < board.width; y++) {
                     if (board.tiles[x][y].hasWumpus) {
+                        board.tiles[x][y].hasWumpus = false;
+                        return true;
                     }
                 }
-
                 break;
             case Direction.south:
                 break;
