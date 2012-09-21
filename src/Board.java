@@ -1,4 +1,3 @@
-import java.Math;
 
 public class Board {
     int width;
@@ -14,21 +13,21 @@ public class Board {
         }
 
         //Set the position of the wumpus
-        int w_x = (Math.random() * width);
-        int w_y = (Math.random() * width);
-        tile[w_y][w_x].hasWumpus = true;
+        int w_x = (int)(Math.random() * width);
+        int w_y = (int)(Math.random() * width);
+        tiles[w_y][w_x].hasWumpus = true;
 
         //Set the position of the gold
-        int g_x = (Math.random() * width);
-        int g_y = (Math.random() * width);
-        tile[g_y][g_x].hasGold = true;
+        int g_x = (int)(Math.random() * width);
+        int g_y = (int)(Math.random() * width);
+        tiles[g_y][g_x].hasGold = true;
 
         //Set the position of the pits
         for(int i = 0; i < num_pits; i++){
-            int p_x = (Math.random() * width);
-            int p_y = (Math.random() * width);
-            if(!tile[p_y][p_x].hasWumpus && !tile[p_y][p_x].hasGold)
-                tile[p_y][p_x].hasPit = true;
+            int p_x = (int)(Math.random() * width);
+            int p_y = (int)(Math.random() * width);
+            if(!tiles[p_y][p_x].hasWumpus && !tiles[p_y][p_x].hasGold)
+                tiles[p_y][p_x].hasPit = true;
             else
                 i--;
         }
@@ -38,7 +37,7 @@ public class Board {
     public boolean isStinky(int x, int y){
         for(int i = x-1; i < x+1; i++)
             for(int j = y-1; j < y+1; j++)
-                if((i < width && i >= 0) && (j < width && j >= 0) && tiles[i][j].hasWumpus)
+                if(isValid(j, i) && tiles[i][j].hasWumpus)
                     return true;
         return false;
     }
@@ -47,7 +46,7 @@ public class Board {
     public boolean isWindy(int x, int y){
         for(int i = y-1; i < y+1; i++)
             for(int j = x-1; j < x+1; j++)
-                if((i < width && i >= 0) && (j < width && j >= 0) && tiles[i][j].hasPit)
+                if(isValid(j, i) && tiles[i][j].hasPit)
                     return true;
         return false;
     }
@@ -55,6 +54,10 @@ public class Board {
     //Query the goldyness of a tile
     public boolean hasGold(int x, int y){
         return tiles[y][x].hasGold;
+    }
+
+    public boolean isValid(int x, int y){
+        return (x < width && x >= 0) && (y < width && y >= 0);
     }
 }
 
