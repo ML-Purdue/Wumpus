@@ -95,4 +95,26 @@ public class Engine {
     }
 
 
+    public void draw(){
+        //buffer each line so that we can overwrite breeze with Wumpus, etc.
+        char[] buf = new char[board.width];
+
+        for(int y = 0; y < board.width; y++){
+            for(int x = 0; x < board.width; x++){
+                buf[x] = ' ';
+                if(board.isStinky(x, y))
+                    buf[x] = 's';
+                if(board.isWindy(x, y))
+                    buf[x] = 'b';
+                if(board.hasGold(x, y))
+                    buf[x] = 'G';
+                if(board.tiles[y][x].hasWumpus)
+                    buf[x] = 'W';
+                if(board.tiles[y][x].hasPit)
+                    buf[x] = 'P';
+            }
+            //print the row
+            System.out.println(buf);
+        }
+    }
 }
