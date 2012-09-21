@@ -1,34 +1,60 @@
 
 public class Engine {
 	private Agent agent;
-	private int turn;
     private Board board;
+	private int turn;
+    private int score;
+    private boolean inProgress;
+    
+    public Engine (int width) {
+    	double pit_constant = Math.random() * .5 + .5;
+    	int num_pits = (int) (width * pit_constant);
+    	this.board = new Board(width,num_pits);
+    	this.agent = new Agent(board.tiles[0][0]);
+    	this.turn = 0;
+    	this.score = 0;
+    	this.inProgress = true;
+    }
+    
+    private void endGame() {
+    	this.inProgress = false;
+    	score = 0;
+    	if (agent.alive)
+    		if (agent.hasGold)
+    			score += 1000;		// +1000 for gold
+    	else
+    		score -= 1000;			// -1000 for death
+    	if (!agent.hasArrow)
+    		score -= 10;			// -10 for cost of arrow
+    	score -= turn;				// -1 per turn
+    }
 
+    /* Player Actions */
     public void turn(Direction heading) {
         turn++;
         agent.heading = heading;
     }
 
     public boolean move() {
-        int toX;
-        int toY;
+        int toX = 0;
+        int toY = 0;
 
         turn++;
 
         switch (agent.heading) {
-            case Direction.north:
+            case north:
                 toX = agent.location.x;
                 toY = agent.location.y + 1;
                 break;
-            case Direction.south:
+            case south:
                 toX = agent.location.x;
                 toY = agent.location.y - 1;
                 break;
-            case Direction.east:
+            case east:
                 toX = agent.location.x + 1;
                 toY = agent.location.y;
                 break;
-            case Direction.west:
+            case west:
                 toX = agent.location.x - 1;
                 toY = agent.location.y;
                 break;
@@ -50,8 +76,8 @@ public class Engine {
     public void grab() {
         turn++;
         if (agent.location.hasGold) {
-            agent.gold = true;
-            location.hasGold = false;
+            agent.hasGold = true;
+            agent.location.hasGold = false;
         }
     }
 
@@ -69,10 +95,10 @@ public class Engine {
             return false;
         }
         agent.hasArrow = false;
-        x = agent.location.x;
-        y = agent.location.y;
+        int x = agent.location.x;
+        int y = agent.location.y;
         switch (agent.heading) {
-            case Direction.north:
+            case north:
                 for (; y < board.width; y++) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -80,7 +106,7 @@ public class Engine {
                     }
                 }
                 break;
-            case Direction.south:
+            case south:
                 for (; y >= 0; y--) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -88,7 +114,7 @@ public class Engine {
                     }
                 }
                 break;
-            case Direction.east:
+            case east:
                 for (; x < board.width; x++) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -96,7 +122,7 @@ public class Engine {
                     }
                 }
                 break;
-            case Direction.west:
+            case west:
                 for (; x >= 0; x--) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -109,10 +135,42 @@ public class Engine {
         return false;
     }
 
-    /* TODO: add sensory methods */
+    /* sensory methods */
+    public boolean isStinky() {
+    	return board.isStinky(agent.location.x, agent.location.y);
+    }
+    
+    public boolean isWindy() {
+    	return board.isWindy(agent.location.x, agent.location.y);
+    }
+    
+    public boolean hasGold() {
+    	return board.hasGold(agent.location.x, agent.location.y);
+    }
 
     public Direction getHeading() {
         return agent.heading;
+    }
+    
+    public int getX() {
+    	return agent.location.x;
+    }
+    
+    public int getY() {
+    	return agent.location.y;
+    }
+    
+    /* Game status */
+    public int getScore() {
+    	return score;
+    }
+    
+    public boolean inProgress() {
+    	return inProgress;
+    }
+    
+    public int getTurn() {
+    	return turn;
     }
 
     public void draw(){
