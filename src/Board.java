@@ -1,9 +1,12 @@
+import java.util.Random;
 
 public class Board {
     int width;
     Tile[][] tiles;
 
     public Board(int w, int num_pits){
+        Random rand = new Random();
+
         width = w;
         tiles = new Tile[w][w];
         for(int i = 0; i < w; i++){
@@ -13,19 +16,19 @@ public class Board {
         }
 
         //Set the position of the wumpus
-        int w_x = (int)(Math.random() * width);
-        int w_y = (int)(Math.random() * width);
+        int w_x = rand.nextInt(width);
+        int w_y = rand.nextInt(width);
         tiles[w_y][w_x].hasWumpus = true;
 
         //Set the position of the gold
-        int g_x = (int)(Math.random() * width);
-        int g_y = (int)(Math.random() * width);
+        int g_x = rand.nextInt(width);
+        int g_y = rand.nextInt(width);
         tiles[g_y][g_x].hasGold = true;
 
         //Set the position of the pits
         for(int i = 0; i < num_pits; i++){
-            int p_x = (int)(Math.random() * width);
-            int p_y = (int)(Math.random() * width);
+            int p_x = rand.nextInt(width);
+            int p_y = rand.nextInt(width);
             if(!tiles[p_y][p_x].hasWumpus && !tiles[p_y][p_x].hasGold)
                 tiles[p_y][p_x].hasPit = true;
             else
