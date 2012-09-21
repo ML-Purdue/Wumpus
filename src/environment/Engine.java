@@ -1,8 +1,21 @@
+package environment;
+
+import agent.Agent;
 
 public class Engine {
 	private Agent agent;
+    private int agent_x;
+    private int agent_y;
 	private int turn;
     private Board board;
+
+    public Engine(int width) {
+        agent = new Agent();
+        agent_x = 0;
+        agent_y = 0;
+        turn = 0;
+        board = new Board(width, 3);
+    }
 
     public void turn(Direction heading) {
         turn++;
@@ -10,27 +23,27 @@ public class Engine {
     }
 
     public boolean move() {
-        int toX;
-        int toY;
+        int toX = -1;
+        int toY = -1;
 
         turn++;
 
         switch (agent.heading) {
-            case Direction.north:
-                toX = agent.location.x;
-                toY = agent.location.y + 1;
+            case north:
+                toX = agent_x;
+                toY = agent_y + 1;
                 break;
-            case Direction.south:
-                toX = agent.location.x;
-                toY = agent.location.y - 1;
+            case south:
+                toX = agent_x;
+                toY = agent_y - 1;
                 break;
-            case Direction.east:
-                toX = agent.location.x + 1;
-                toY = agent.location.y;
+            case east:
+                toX = agent_x + 1;
+                toY = agent_y;
                 break;
-            case Direction.west:
-                toX = agent.location.x - 1;
-                toY = agent.location.y;
+            case west:
+                toX = agent_x - 1;
+                toY = agent_y;
                 break;
         }
 
@@ -38,8 +51,9 @@ public class Engine {
             return false;
         }
 
-        agent.location = board.tiles[toX][toY];
-        if (agent.location.hasWumpus || agent.location.hasPit) {
+        agent_x = toX;
+        agent_y = toY;
+        if (board.tiles[agent_y][agent_x].hasWumpus || board.tiles[agent_y][agent_x].hasPit) {
             agent.alive = false;
             endGame();
         }
@@ -49,15 +63,15 @@ public class Engine {
 
     public void grab() {
         turn++;
-        if (agent.location.hasGold) {
-            agent.gold = true;
-            location.hasGold = false;
+        if (board.tiles[agent_y][agent_x].hasGold) {
+            agent.hasGold = true;
+            board.tiles[agent_y][agent_x].hasGold = false;
         }
     }
 
     public void escape() {
         turn++;
-        if (agent.location.x == 0 && agent.location.y == 0) {
+        if (agent_x == 0 && agent_y == 0) {
             endGame();
         }
     }
@@ -69,10 +83,10 @@ public class Engine {
             return false;
         }
         agent.hasArrow = false;
-        x = agent.location.x;
-        y = agent.location.y;
+        int x = agent_x;
+        int y = agent_y;
         switch (agent.heading) {
-            case Direction.north:
+            case north:
                 for (; y < board.width; y++) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -80,7 +94,7 @@ public class Engine {
                     }
                 }
                 break;
-            case Direction.south:
+            case south:
                 for (; y >= 0; y--) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -88,7 +102,7 @@ public class Engine {
                     }
                 }
                 break;
-            case Direction.east:
+            case east:
                 for (; x < board.width; x++) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -96,7 +110,7 @@ public class Engine {
                     }
                 }
                 break;
-            case Direction.west:
+            case west:
                 for (; x >= 0; x--) {
                     if (board.tiles[x][y].hasWumpus) {
                         board.tiles[x][y].hasWumpus = false;
@@ -136,5 +150,15 @@ public class Engine {
             //print the row
             System.out.println(buf);
         }
+    }
+
+    public void endGame(){
+        System.out.println("You have won the game!");
+        System.exit(0);
+    }
+
+    public static void main(String argv[]){
+        Engine eng = new Engine(4);
+        eng.draw();
     }
 }

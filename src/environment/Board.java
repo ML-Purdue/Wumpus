@@ -1,8 +1,10 @@
+package environment;
+
 import java.util.Random;
 
 public class Board {
     public int width;
-    Tile[][] tiles;
+    protected Tile[][] tiles;
 
     public Board(int w, int num_pits){
         Random rand = new Random();
