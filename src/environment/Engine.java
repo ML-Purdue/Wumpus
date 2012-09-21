@@ -137,12 +137,12 @@ public class Engine {
             for(int x = 0; x < board.width; x++){
                 buf[x] = ' ';
                 if(board.isStinky(x, y))
-                    buf[x] = 's';
+                    buf[x] = '^';
                 if(board.isWindy(x, y))
-                    if(buf[x] == 's')
-                        buf[x] = 'n';
+                    if(buf[x] == '^')
+                        buf[x] = 'o';
                     else
-                        buf[x] = 'b';
+                        buf[x] = '~';
                 if(board.hasGold(x, y))
                     buf[x] = 'G';
                 if(board.tiles[y][x].hasWumpus)
