@@ -139,7 +139,10 @@ public class Engine {
                 if(board.isStinky(x, y))
                     buf[x] = 's';
                 if(board.isWindy(x, y))
-                    buf[x] = 'b';
+                    if(buf[x] == 's')
+                        buf[x] = 'n';
+                    else
+                        buf[x] = 'b';
                 if(board.hasGold(x, y))
                     buf[x] = 'G';
                 if(board.tiles[y][x].hasWumpus)
