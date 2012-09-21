@@ -1,3 +1,4 @@
+package environment;
 
 public class Tile {
     public int x;

@@ -1,7 +1,8 @@
+package environment;
 
 public class Agent {
-	public Tile location;
     public Direction heading;
+    public Tile location;
     public boolean alive;
     public boolean hasGold;
     public boolean hasArrow;

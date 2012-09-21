@@ -1,3 +1,5 @@
+package environment;
+
 
 public class Engine {
 	private Agent agent;
@@ -65,7 +67,8 @@ public class Engine {
         }
 
         agent.location = board.tiles[toX][toY];
-        if (agent.location.hasWumpus || agent.location.hasPit) {
+        if (board.tiles[agent.location.x][agent.location.x].hasWumpus ||
+        		board.tiles[agent.location.x][agent.location.x].hasPit) {
             agent.alive = false;
             endGame();
         }
@@ -97,6 +100,7 @@ public class Engine {
         agent.hasArrow = false;
         int x = agent.location.x;
         int y = agent.location.y;
+
         switch (agent.heading) {
             case north:
                 for (; y < board.width; y++) {
@@ -147,6 +151,10 @@ public class Engine {
     public boolean hasGold() {
     	return board.hasGold(agent.location.x, agent.location.y);
     }
+    
+    public boolean hasArrow() {
+    	return agent.hasArrow;
+    }
 
     public Direction getHeading() {
         return agent.heading;
@@ -159,6 +167,8 @@ public class Engine {
     public int getY() {
     	return agent.location.y;
     }
+    
+    
     
     /* Game status */
     public int getScore() {
@@ -183,7 +193,10 @@ public class Engine {
                 if(board.isStinky(x, y))
                     buf[x] = 's';
                 if(board.isWindy(x, y))
-                    buf[x] = 'b';
+                    if(buf[x] == 's')
+                        buf[x] = 'n';
+                    else
+                        buf[x] = 'b';
                 if(board.hasGold(x, y))
                     buf[x] = 'G';
                 if(board.tiles[y][x].hasWumpus)
@@ -194,5 +207,10 @@ public class Engine {
             //print the row
             System.out.println(buf);
         }
+    }
+
+    public static void main(String argv[]){
+        Engine eng = new Engine(4);
+        eng.draw();
     }
 }
