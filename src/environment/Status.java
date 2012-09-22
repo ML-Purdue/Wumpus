@@ -1,5 +1,5 @@
 package environment;
 
-public enum AgentStatus {
+public enum Status {
 	ALIVE, EATEN, FALLEN, ESCAPED
 }

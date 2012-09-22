@@ -1,16 +1,16 @@
 package environment;
 
-public class Agent {
+public class PlayerInfo {
     public Direction heading;
     public Tile location;
-    public AgentStatus status;
+    public Status status;
     public boolean hasGold;
     public boolean hasArrow;
     
-    public Agent(Tile location) {
+    public PlayerInfo(Tile location) {
     	this.location = location;
-    	this.heading = Direction.north;
-    	this.status = AgentStatus.ALIVE;
+    	this.heading = Direction.NORTH;
+    	this.status = Status.ALIVE;
     	this.hasGold = false;
     	this.hasArrow = true;
     }

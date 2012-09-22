@@ -2,32 +2,25 @@ package control;
 import java.util.Scanner;
 import environment.Direction;
 import environment.Engine;
-import environment.AgentStatus;
+import environment.Status;
 
-public class CommandLineInterface {
+public class CommandLineInterface extends Agent {
 	Scanner sc;
-	Engine game;
 	
 	public CommandLineInterface (Engine game) {
+		super(game);
 		sc = new Scanner(System.in);
-		this.game = game;
-
-		/*
-		System.out.println("Welcome to the Wumpus game.  Please enter the board size");
-		int width = Integer.parseInt(sc.nextLine());
-		System.out.println("Generating a board of width " + width);
-		*/
 	}
 
 	public static String dirToStr(Direction dir) {
 		switch(dir){
-		case north :
+		case NORTH :
 			return "North";
-		case south :
+		case SOUTH :
 			return "South";
-		case east :
+		case EAST :
 			return "East";
-		case west :
+		case WEST :
 			return "West";
 		}
 		// This shouldn't happen
@@ -51,7 +44,7 @@ public class CommandLineInterface {
 	public void printScore() {
 		System.out.println("Game Over!");
 		System.out.println("Alive:\t" + 
-				(game.getAgentStatus() == AgentStatus.ESCAPED));
+				(game.getAgentStatus() == Status.ESCAPED));
 		System.out.println("Gold:\t" + game.holdingGold());
 		System.out.println("Arrow:\t" + game.holdingArrow());
 		System.out.println("Steps:\t" + game.getTurn());
@@ -75,13 +68,13 @@ public class CommandLineInterface {
 			
 			switch (line.charAt(0)) {
 			case 'N' :
-				return game.turn(Direction.north);
+				return game.turn(Direction.NORTH);
 			case 'S' :
-				return game.turn(Direction.south);
+				return game.turn(Direction.SOUTH);
 			case 'E' :
-				return game.turn(Direction.east);
+				return game.turn(Direction.EAST);
 			case 'W' :
-				return game.turn(Direction.west);
+				return game.turn(Direction.WEST);
 			case 'B' :
 				return false;
 			default :
@@ -97,9 +90,9 @@ public class CommandLineInterface {
 		else
 			System.out.println("Could not move " + dirToStr(game.getHeading()) + ".");
 		
-		if (game.getAgentStatus() == AgentStatus.EATEN) {
+		if (game.getAgentStatus() == Status.EATEN) {
 			System.out.println("You were eaten by the Wumpus!");
-		} else if (game.getAgentStatus() == AgentStatus.FALLEN) {
+		} else if (game.getAgentStatus() == Status.FALLEN) {
 			System.out.println("You fell down a bottomless pit!");
 		}
 		return true;  // The game state has changed (turn ticker)
@@ -171,6 +164,10 @@ public class CommandLineInterface {
 			}
 		}
 	}
+	
+	public void end () {
+		printScore();
+	}
 
 	public static void main(String[] args) {
 		int width = 4;
@@ -181,6 +178,6 @@ public class CommandLineInterface {
 			cli.iterate();
 		}
 		
-		cli.printScore();
+		cli.end();
 	}
 }

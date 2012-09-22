@@ -2,7 +2,7 @@ package environment;
 
 
 public class Engine {
-	private Agent agent;
+	private PlayerInfo agent;
     private Board board;
 	private int turn;
     private int score;
@@ -12,7 +12,7 @@ public class Engine {
     	double pit_constant = Math.random() * .5 + .5;
     	int num_pits = (int) (width * pit_constant);
     	this.board = new Board(width,num_pits);
-    	this.agent = new Agent(board.tiles[0][0]);
+    	this.agent = new PlayerInfo(board.tiles[0][0]);
     	this.turn = 0;
     	this.score = 0;
     	this.inProgress = true;
@@ -21,7 +21,7 @@ public class Engine {
     private void endGame() {
     	this.inProgress = false;
     	score = 0;
-    	if (agent.status == AgentStatus.ESCAPED) {
+    	if (agent.status == Status.ESCAPED) {
     		if (agent.hasGold) {
     			score += 1000;		// +1000 for gold
     		}
@@ -47,19 +47,19 @@ public class Engine {
         turn++;
 
         switch (agent.heading) {
-            case north:
+            case NORTH:
                 toX = agent.location.x;
                 toY = agent.location.y + 1;
                 break;
-            case south:
+            case SOUTH:
                 toX = agent.location.x;
                 toY = agent.location.y - 1;
                 break;
-            case east:
+            case EAST:
                 toX = agent.location.x + 1;
                 toY = agent.location.y;
                 break;
-            case west:
+            case WEST:
                 toX = agent.location.x - 1;
                 toY = agent.location.y;
                 break;
@@ -71,10 +71,10 @@ public class Engine {
 
         agent.location = board.tiles[toY][toX];
         if (agent.location.hasWumpus) {
-        	agent.status = AgentStatus.EATEN;
+        	agent.status = Status.EATEN;
         	endGame();
         } else if (agent.location.hasPit) {
-        	agent.status = AgentStatus.FALLEN;
+        	agent.status = Status.FALLEN;
         	endGame();
         }
 
@@ -94,7 +94,7 @@ public class Engine {
     public boolean escape() {
         turn++;
         if (agent.location.x == 0 && agent.location.y == 0) {
-        	agent.status = AgentStatus.ESCAPED;
+        	agent.status = Status.ESCAPED;
             endGame();
             return true;
         }
@@ -112,7 +112,7 @@ public class Engine {
         int y = agent.location.y;
 
         switch (agent.heading) {
-            case north:
+            case NORTH:
                 for (; y < board.width; y++) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
@@ -120,7 +120,7 @@ public class Engine {
                     }
                 }
                 break;
-            case south:
+            case SOUTH:
                 for (; y >= 0; y--) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
@@ -128,7 +128,7 @@ public class Engine {
                     }
                 }
                 break;
-            case east:
+            case EAST:
                 for (; x < board.width; x++) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
@@ -136,7 +136,7 @@ public class Engine {
                     }
                 }
                 break;
-            case west:
+            case WEST:
                 for (; x >= 0; x--) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
@@ -170,7 +170,7 @@ public class Engine {
     	return agent.hasGold;
     }
     
-    public AgentStatus getAgentStatus() {
+    public Status getAgentStatus() {
     	return agent.status;
     }
 
