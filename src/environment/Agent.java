@@ -2,7 +2,7 @@ package environment;
 
 public class Agent {
     public Direction heading;
-    public Tile location;
+    protected Tile location;
     public AgentStatus status;
     public boolean hasGold;
     public boolean hasArrow;
