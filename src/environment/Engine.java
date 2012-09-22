@@ -21,23 +21,26 @@ public class Engine {
     private void endGame() {
     	this.inProgress = false;
     	score = 0;
-    	if (agent.alive)
-    		if (agent.hasGold)
+    	if (agent.status == AgentStatus.ESCAPED) {
+    		if (agent.hasGold) {
     			score += 1000;		// +1000 for gold
-    	else
+    		}
+    	} else
     		score -= 1000;			// -1000 for death
     	if (!agent.hasArrow)
     		score -= 10;			// -10 for cost of arrow
     	score -= turn;				// -1 per turn
     }
 
-    /* Player Actions */
-    public void turn(Direction heading) {
+    /* Player Actions
+     * All return true on success, false otherwise */
+    public boolean turn(Direction heading) {
         turn++;
         agent.heading = heading;
+        return true;
     }
 
-    public boolean move() {
+    public boolean forward() {
         int toX = 0;
         int toY = 0;
 
@@ -66,29 +69,36 @@ public class Engine {
             return false;
         }
 
-        agent.location = board.tiles[toX][toY];
-        if (board.tiles[agent.location.x][agent.location.x].hasWumpus ||
-        		board.tiles[agent.location.x][agent.location.x].hasPit) {
-            agent.alive = false;
-            endGame();
+        agent.location = board.tiles[toY][toX];
+        if (agent.location.hasWumpus) {
+        	agent.status = AgentStatus.EATEN;
+        	endGame();
+        } else if (agent.location.hasPit) {
+        	agent.status = AgentStatus.FALLEN;
+        	endGame();
         }
 
         return true;
     }
 
-    public void grab() {
+    public boolean grab() {
         turn++;
         if (agent.location.hasGold) {
             agent.hasGold = true;
             agent.location.hasGold = false;
+            return true;
         }
+        return false;
     }
 
-    public void escape() {
+    public boolean escape() {
         turn++;
         if (agent.location.x == 0 && agent.location.y == 0) {
+        	agent.status = AgentStatus.ESCAPED;
             endGame();
+            return true;
         }
+        return false;
     }
 
     /* returns true if the wumpus died, false otherwise */
@@ -104,32 +114,32 @@ public class Engine {
         switch (agent.heading) {
             case north:
                 for (; y < board.width; y++) {
-                    if (board.tiles[x][y].hasWumpus) {
-                        board.tiles[x][y].hasWumpus = false;
+                    if (board.tiles[y][x].hasWumpus) {
+                        board.tiles[y][x].hasWumpus = false;
                         return true;
                     }
                 }
                 break;
             case south:
                 for (; y >= 0; y--) {
-                    if (board.tiles[x][y].hasWumpus) {
-                        board.tiles[x][y].hasWumpus = false;
+                    if (board.tiles[y][x].hasWumpus) {
+                        board.tiles[y][x].hasWumpus = false;
                         return true;
                     }
                 }
                 break;
             case east:
                 for (; x < board.width; x++) {
-                    if (board.tiles[x][y].hasWumpus) {
-                        board.tiles[x][y].hasWumpus = false;
+                    if (board.tiles[y][x].hasWumpus) {
+                        board.tiles[y][x].hasWumpus = false;
                         return true;
                     }
                 }
                 break;
             case west:
                 for (; x >= 0; x--) {
-                    if (board.tiles[x][y].hasWumpus) {
-                        board.tiles[x][y].hasWumpus = false;
+                    if (board.tiles[y][x].hasWumpus) {
+                        board.tiles[y][x].hasWumpus = false;
                         return true;
                     }
                 }
@@ -152,8 +162,16 @@ public class Engine {
     	return board.hasGold(agent.location.x, agent.location.y);
     }
     
-    public boolean hasArrow() {
+    public boolean holdingArrow() {
     	return agent.hasArrow;
+    }
+    
+    public boolean holdingGold() {
+    	return agent.hasGold;
+    }
+    
+    public AgentStatus getAgentStatus() {
+    	return agent.status;
     }
 
     public Direction getHeading() {
@@ -167,8 +185,6 @@ public class Engine {
     public int getY() {
     	return agent.location.y;
     }
-    
-    
     
     /* Game status */
     public int getScore() {
@@ -187,9 +203,9 @@ public class Engine {
         //buffer each line so that we can overwrite breeze with Wumpus, etc.
         char[] buf = new char[board.width];
 
-        for(int y = 0; y < board.width; y++){
+        for(int y = board.width-1; y >= 0; y--){
             for(int x = 0; x < board.width; x++){
-                buf[x] = ' ';
+                buf[x] = '-';
                 if(board.isStinky(x, y))
                     buf[x] = '^';
                 if(board.isWindy(x, y))

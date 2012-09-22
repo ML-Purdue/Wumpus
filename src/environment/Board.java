@@ -4,18 +4,22 @@ import java.util.Random;
 
 public class Board {
     public int width;
-    protected Tile[][] tiles;
+    protected Tile[][] tiles;  // tiles[y][x]
 
     public Board(int w, int num_pits){
         Random rand = new Random();
 
         width = w;
         tiles = new Tile[w][w];
-        for(int i = 0; i < w; i++){
-            for(int j = 0; j < w; j++){
-                tiles[i][j] = new Tile(j, i);
+        for(int y = 0; y < w; y++){
+            for(int x = 0; x < w; x++){
+                tiles[y][x] = new Tile(x, y);
             }
         }
+        
+        /* Note: probably wouldn't matter, but might help to replace with a knuth
+         * shuffle of valid tiles?
+         */
 
         //Set the position of the wumpus
         for(int i = 0; i < 1; i++){
@@ -51,19 +55,21 @@ public class Board {
 
     //Query the stinkyness of a tile
     public boolean isStinky(int x, int y){
-        for(int i = y-1; i <= y+1; i++)
-            for(int j = x-1; j <= x+1; j++)
-                if(isValid(j, i) && tiles[i][j].hasWumpus)
-                    return true;
-        return false;
+    	if (isValid(x-1, y) && tiles[y][x-1].hasWumpus ||
+    			isValid(x+1, y) && tiles[y][x+1].hasWumpus ||
+    			isValid(x, y-1) && tiles[y-1][x].hasWumpus ||
+    			isValid(x, y+1) && tiles[y+1][x].hasWumpus)
+    		return true;
+    	return false;
     }
 
     //Query the windyness of a tile
     public boolean isWindy(int x, int y){
-        for(int i = y-1; i <= y+1; i++)
-            for(int j = x-1; j <= x+1; j++)
-                if(isValid(j, i) && tiles[i][j].hasPit)
-                    return true;
+    	if (isValid(x-1, y) && tiles[y][x-1].hasPit ||
+    			isValid(x+1, y) && tiles[y][x+1].hasPit ||
+    			isValid(x, y-1) && tiles[y-1][x].hasPit ||
+    			isValid(x, y+1) && tiles[y+1][x].hasPit)
+    		return true;
         return false;
     }
 
