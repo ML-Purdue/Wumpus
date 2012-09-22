@@ -51,6 +51,9 @@ public class Board {
             else
                 i--;
         }
+
+        //The agent has seen his starting square
+        tiles[0][0].agentHasSeen = true;
     }
 
     //Query the stinkyness of a tile

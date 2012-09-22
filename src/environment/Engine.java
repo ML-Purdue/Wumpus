@@ -7,6 +7,7 @@ public class Engine {
 	private int turn;
     private int score;
     private boolean inProgress;
+    private boolean wumpusAlive;
     
     public Engine (int width) {
     	double pit_constant = Math.random() * .5 + .5;
@@ -16,6 +17,7 @@ public class Engine {
     	this.turn = 0;
     	this.score = 0;
     	this.inProgress = true;
+        this.wumpusAlive = true;
     }
     
     private void endGame() {
@@ -29,7 +31,15 @@ public class Engine {
     		score -= 1000;			// -1000 for death
     	if (!agent.hasArrow)
     		score -= 10;			// -10 for cost of arrow
+        if (!wumpusAlive)
+            score += 100;           // +100 for killing the wumpus
     	score -= turn;				// -1 per turn
+
+        for(int i = 0; i < board.width; i++){
+            for(int j = 0; j < board.width; j++){
+                board.tiles[j][i].agentHasSeen = true;
+            }
+        }
     }
 
     /* Player Actions
@@ -78,6 +88,8 @@ public class Engine {
         	endGame();
         }
 
+        board.tiles[toY][toX].agentHasSeen = true;
+
         return true;
     }
 
@@ -116,6 +128,7 @@ public class Engine {
                 for (; y < board.width; y++) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
+                        wumpusAlive = false;
                         return true;
                     }
                 }
@@ -124,6 +137,7 @@ public class Engine {
                 for (; y >= 0; y--) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
+                        wumpusAlive = false;
                         return true;
                     }
                 }
@@ -132,6 +146,7 @@ public class Engine {
                 for (; x < board.width; x++) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
+                        wumpusAlive = false;
                         return true;
                     }
                 }
@@ -140,6 +155,7 @@ public class Engine {
                 for (; x >= 0; x--) {
                     if (board.tiles[y][x].hasWumpus) {
                         board.tiles[y][x].hasWumpus = false;
+                        wumpusAlive = false;
                         return true;
                     }
                 }
@@ -205,20 +221,28 @@ public class Engine {
 
         for(int y = board.width-1; y >= 0; y--){
             for(int x = 0; x < board.width; x++){
-                buf[x] = '-';
-                if(board.isStinky(x, y))
-                    buf[x] = '^';
-                if(board.isWindy(x, y))
-                    if(buf[x] == '^')
-                        buf[x] = 'o';
-                    else
-                        buf[x] = '~';
-                if(board.hasGold(x, y))
-                    buf[x] = 'G';
-                if(board.tiles[y][x].hasWumpus)
-                    buf[x] = 'W';
-                if(board.tiles[y][x].hasPit)
-                    buf[x] = 'P';
+                buf[x] = '.';
+                if(board.tiles[y][x].agentHasSeen){
+                    buf[x] = '-';
+                    if(board.isStinky(x, y))
+                        buf[x] = '^';
+                    if(board.isWindy(x, y))
+                        if(buf[x] == '^')
+                            buf[x] = 'o';
+                        else
+                            buf[x] = '~';
+                    if(board.hasGold(x, y))
+                        buf[x] = 'G';
+                    if(board.tiles[y][x].hasWumpus)
+                        if(wumpusAlive = true)
+                            buf[x] = 'W';
+                        else
+                            buf[x] = 'M';
+                    if(board.tiles[y][x].hasPit)
+                        buf[x] = 'P';
+                    if(x == agent.location.x && y == agent.location.y)
+                        buf[x] = 'A';
+                }
             }
             //print the row
             System.out.println(buf);

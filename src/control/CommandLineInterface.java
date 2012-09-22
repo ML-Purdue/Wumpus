@@ -31,6 +31,8 @@ public class CommandLineInterface extends Agent {
 
 	public void printStatus () {
 		System.out.println(">>>> Turn\t" + game.getTurn() + " <<<<");
+		System.out.println(">>> Visible Game Board <<<");
+		game.draw();
 		System.out.println(">>> Player Info <<<");
 		System.out.println("Tile:\t" + game.getX() + ", " + game.getY());
 		System.out.println("Facing:\t" + dirToStr(game.getHeading()));
@@ -45,6 +47,8 @@ public class CommandLineInterface extends Agent {
 	
 	public void printScore() {
 		System.out.println("Game Over!");
+		System.out.println("Entire game board:");
+		game.draw();
 		System.out.println("Alive:\t" + 
 				(game.getAgentStatus() == Status.ESCAPED));
 		System.out.println("Gold:\t" + game.holdingGold());

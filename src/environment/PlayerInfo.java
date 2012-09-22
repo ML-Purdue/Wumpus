@@ -2,7 +2,7 @@ package environment;
 
 public class PlayerInfo {
     public Direction heading;
-    public Tile location;
+    protected Tile location;
     public Status status;
     public boolean hasGold;
     public boolean hasArrow;
