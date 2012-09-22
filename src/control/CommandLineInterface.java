@@ -10,6 +10,8 @@ public class CommandLineInterface extends Agent {
 	public CommandLineInterface (Engine game) {
 		super(game);
 		sc = new Scanner(System.in);
+		
+		System.out.println("Starting a new game of Wumpus!");
 	}
 
 	public static String dirToStr(Direction dir) {
@@ -28,7 +30,7 @@ public class CommandLineInterface extends Agent {
 	}
 
 	public void printStatus () {
-		System.out.println("Turn\t" + game.getTurn());
+		System.out.println(">>>> Turn\t" + game.getTurn() + " <<<<");
 		System.out.println(">>> Player Info <<<");
 		System.out.println("Tile:\t" + game.getX() + ", " + game.getY());
 		System.out.println("Facing:\t" + dirToStr(game.getHeading()));
