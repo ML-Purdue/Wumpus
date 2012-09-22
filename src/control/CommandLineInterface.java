@@ -36,6 +36,8 @@ public class CommandLineInterface {
 
 	public void printStatus () {
 		System.out.println("Turn\t" + game.getTurn());
+		System.out.println(">>> Visible Game Board <<<");
+		game.draw();
 		System.out.println(">>> Player Info <<<");
 		System.out.println("Tile:\t" + game.getX() + ", " + game.getY());
 		System.out.println("Facing:\t" + dirToStr(game.getHeading()));
@@ -50,6 +52,8 @@ public class CommandLineInterface {
 	
 	public void printScore() {
 		System.out.println("Game Over!");
+		System.out.println("Entire game board:");
+		game.draw();
 		System.out.println("Alive:\t" + 
 				(game.getAgentStatus() == AgentStatus.ESCAPED));
 		System.out.println("Gold:\t" + game.holdingGold());

@@ -6,6 +6,7 @@ public class Tile {
     public boolean hasWumpus;
     public boolean hasGold;
     public boolean hasPit;
+    protected boolean agentHasSeen;
 
     public Tile(int x, int y, boolean w, boolean g, boolean p){
         this.x = x;
@@ -13,6 +14,7 @@ public class Tile {
         hasWumpus = w;
         hasGold = g;
         hasPit = p;
+        agentHasSeen = false;
     }
 
     public Tile(int x, int y){
@@ -21,6 +23,7 @@ public class Tile {
         hasWumpus = false;
         hasGold = false;
         hasPit = false;
+        agentHasSeen = false;
     }
 }
 
