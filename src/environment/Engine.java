@@ -240,7 +240,7 @@ public class Engine {
                             buf[x] = 'M';
                     if(board.tiles[y][x].hasPit)
                         buf[x] = 'P';
-                    if(x == agent.location.x && y == agent.location.y)
+                    if(x == agent.location.x && y == agent.location.y && agent.status == Status.ALIVE)
                         buf[x] = 'A';
                 }
             }
