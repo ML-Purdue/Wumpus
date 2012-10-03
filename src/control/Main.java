@@ -63,7 +63,7 @@ public class Main {
 		// Agent player = new <your agent class>(game);
 		for (int i = 0; i < runs; i++) {
 			Engine game = new Engine(width);
-			Agent player = new CommandLineInterface(game);
+			Agent player = new Magellan(game);
 
 			while (game.inProgress()) {
 				player.iterate();
