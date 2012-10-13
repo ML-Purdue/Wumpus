@@ -5,7 +5,6 @@ public class Engine {
 	private PlayerInfo agent;
     private Board board;
 	private int turn;
-    private int score;
     private boolean inProgress;
     private boolean wumpusAlive;
     
@@ -15,25 +14,12 @@ public class Engine {
     	this.board = new Board(width,num_pits);
     	this.agent = new PlayerInfo(board.tiles[0][0]);
     	this.turn = 0;
-    	this.score = 0;
     	this.inProgress = true;
         this.wumpusAlive = true;
     }
     
     private void endGame() {
     	this.inProgress = false;
-    	score = 0;
-    	if (agent.status == Status.ESCAPED) {
-    		if (agent.hasGold) {
-    			score += 1000;		// +1000 for gold
-    		}
-    	} else
-    		score -= 1000;			// -1000 for death
-    	if (!agent.hasArrow)
-    		score -= 10;			// -10 for cost of arrow
-        if (!wumpusAlive)
-            score += 100;           // +100 for killing the wumpus
-    	score -= turn;				// -1 per turn
 
         for(int i = 0; i < board.width; i++){
             for(int j = 0; j < board.width; j++){
@@ -202,17 +188,29 @@ public class Engine {
     	return agent.location.y;
     }
     
-    /* Game status */
-    public int getScore() {
-    	return score;
-    }
-    
     public boolean inProgress() {
     	return inProgress;
     }
     
     public int getTurn() {
     	return turn;
+    }
+    
+    /* Calculate the current game score */
+    public int getScore() {
+    	int score = 0;
+    	if (agent.status == Status.ESCAPED) {
+    		if (agent.hasGold) {
+    			score += 1000;		// +1000 for gold
+    		}
+    	} else
+    		score -= 1000;			// -1000 for death
+    	if (!agent.hasArrow)
+    		score -= 10;			// -10 for cost of arrow
+        if (!wumpusAlive)
+            score += 100;           // +100 for killing the wumpus
+    	score -= turn;				// -1 per turn
+    	return score;
     }
 
     public void draw(){
@@ -240,7 +238,7 @@ public class Engine {
                             buf[x] = 'M';
                     if(board.tiles[y][x].hasPit)
                         buf[x] = 'P';
-                    if(x == agent.location.x && y == agent.location.y)
+                    if(x == agent.location.x && y == agent.location.y && agent.status == Status.ALIVE)
                         buf[x] = 'A';
                 }
             }

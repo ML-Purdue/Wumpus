@@ -143,7 +143,7 @@ public class CommandLineInterface extends Agent {
 			String line = sc.nextLine().toUpperCase();
 			if (line.length() == 0)
 				continue;
-			
+
 			switch (line.charAt(0)) {
 			case 'T' :
 				changed = turn();
